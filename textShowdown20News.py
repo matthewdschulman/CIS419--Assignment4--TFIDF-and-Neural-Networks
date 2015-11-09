@@ -70,8 +70,8 @@ print tabulate(nb_table)
 
 # Compute SVM + Cosine Similarity predictions
 print "SVM..."
-predicted_train_svm = text_clf_bayes.predict(newsgroups_train.data)
-predicted_test_svm = text_clf_bayes.predict(newsgroups_test.data)
+predicted_train_svm = text_clf_svm.predict(newsgroups_train.data)
+predicted_test_svm = text_clf_svm.predict(newsgroups_test.data)
 
 # Compute and print out SVM stats
 accuracy_train_svm = np.mean(predicted_train_svm == newsgroups_train.target)
@@ -89,4 +89,3 @@ svm_table = [['STATISTIC', 'TRAINING', 'TESTING'],
 print tabulate(svm_table)
 
 # Plot the ROC plots for both classifiers and the requested classes
-
