@@ -22,6 +22,7 @@ class NeuralNet:
 	self.numEpochs = numEpochs
 	self.neuralNet = None
 	self.weightThetas = None
+	self.unrolledTheta = None
       
 
     def fit(self, X, y):
@@ -32,6 +33,9 @@ class NeuralNet:
             y is an n-dimensional numpy array
         '''
 	n,d = X.shape
+
+	numFeatures = n
+	numClasses = np.unique(y).size
 
 	# create all of the weight matrices theta(1),...,theta(L-1)
 	self.weightThetas = dict()
@@ -45,13 +49,13 @@ class NeuralNet:
 	    d2 = -1
 	    # check if first theta
 	    if (i == 0):
-	        d2 = 2 # TODO: UPDATE THIS PLACEHOLDER
+	        d2 = numFeatures + 1
 		d1 = self.layers[i]
 	    
 	    # check if last theta
 	    if (i == len(self.layers)):
 		 d2 = self.layers[i-1]
-		 d1 = 1 # TODO: UPDATE THIS PLACEHOLDER
+		 d1 = numClasses
 
 	    # update d1 and d2 if not the first or last theta
 	    if (d1 == -1):
@@ -74,6 +78,20 @@ class NeuralNet:
 # 
 	# print theta
 
+    def forwardPropogation(x, y, theta):
+	'''
+	Takes in a vector of parameters (e.g. theta) for the neural network
+	and an instance (or instances)
+	and returns the neural network's outputs
+	Arguments:
+		theta is a dictionary of all the theta weights
+		x and y equate to one labeled training instance
+	'''
+	cur_a = x
+	# for i in range(len(self.layers) + 1):
+	#     cur_z = theta[i+1]*cur_a
+	#     cur_a =  
+	#     
 
     def predict(self, X):
         '''
