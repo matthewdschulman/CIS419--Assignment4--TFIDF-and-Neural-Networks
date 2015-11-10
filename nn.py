@@ -7,7 +7,7 @@ import numpy as np
 
 class NeuralNet:
 
-    def __init__(self, layers, epsilon=0.12, learningRate, numEpochs=100):
+    def __init__(self, layers, epsilon=0.12, learningRate=0.3, numEpochs=100):
         '''
         Constructor
         Arguments:
@@ -16,6 +16,10 @@ class NeuralNet:
         	learningRate - the learning rate for backpropagation
         	numEpochs - the number of epochs to run during training
         '''
+	self.layers = layers
+	self.epsilon = epsilon
+	self.learningRate = learningRate
+	self.numEpochs = numEpochs
       
 
     def fit(self, X, y):
