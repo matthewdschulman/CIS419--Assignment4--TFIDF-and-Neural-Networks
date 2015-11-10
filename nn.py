@@ -23,6 +23,7 @@ class NeuralNet:
 	self.neuralNet = None
 	self.weightThetas = None
 	self.unrolledTheta = None
+	self.thetaDimensions = dict()
       
 
     def fit(self, X, y):
@@ -70,6 +71,9 @@ class NeuralNet:
 
 	    # keep track of the total length of the unrolled theta
 	    totalLengthOfUnrolledTheta += (d1 * d2)
+	    
+	    # keep track of the individual theta dimensions
+	    self.thetaDimensions[i] = [d1, d2]
 	
 	# unroll the weight matrices theta(1),...,theta(L-1) into a single long vector, theta,
 	# that contains all parameters for the neural net
@@ -88,7 +92,7 @@ class NeuralNet:
 	self.unrolledTheta = np.array(unrolled_theta)
 
 
-    def forwardPropogation(x, y, theta):
+    def forwardPropogation(x, theta):
 	'''
 	Takes in a vector of parameters (e.g. theta) for the neural network
 	and an instance (or instances)
@@ -96,12 +100,32 @@ class NeuralNet:
 	Arguments:
 		theta is a dictionary of all the theta weights
 		x and y equate to one labeled training instance
+	Returns:
+		h_theta(x_i) for any instance x_i
 	'''
 	cur_a = x
-	# for i in range(len(self.layers) + 1):
-	#     cur_z = theta[i+1]*cur_a
-	#     cur_a =  
-	#     
+	cum_unroll_count = 0
+	for i in range(len(self.layers) + 1):
+	    cur_theta_dimensions = self.thetaDimensions[i]
+	    delta_unroll = cur_theta_dimensions[0] * cur_theta_dimensions[1]
+            cum_unroll_count += delta_unroll
+            cur_theta = reshape(self.unrolledTheta[(cum_unroll_count - delta_unroll):cum_unroll_count], (cur_theta_dimensions[0], cur_theta_dimensions[1])) 
+	    cur_a = self.sigmoid(np.dot(cur_theta, cur_a))
+	
+	# return h_theta(x)
+	return cur_a
+	    
+
+
+    def sigmoid(self, z):
+        return 1.0/(1.0 + np.exp(-z))
+	
+
+    def gradientCheck():
+	'''
+	Estimate gradient numerically to verify implementation
+	Turn this off in final implementation of class
+	'''
 
     def predict(self, X):
         '''
