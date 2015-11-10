@@ -86,7 +86,6 @@ class NeuralNet:
 	    print "ERROR: UNROLLING MESSED UP!"
 
 	self.unrolledTheta = np.array(unrolled_theta)
-	print np.array(unrolled_theta)
 
 
     def forwardPropogation(x, y, theta):
