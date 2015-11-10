@@ -36,6 +36,7 @@ class NeuralNet:
 
 	numFeatures = n
 	numClasses = np.unique(y).size
+	totalLengthOfUnrolledTheta = 0
 
 	# create all of the weight matrices theta(1),...,theta(L-1)
 	self.weightThetas = dict()
@@ -54,7 +55,7 @@ class NeuralNet:
 	    
 	    # check if last theta
 	    if (i == len(self.layers)):
-		 d2 = self.layers[i-1]
+		 d2 = self.layers[i-1] + 1
 		 d1 = numClasses
 
 	    # update d1 and d2 if not the first or last theta
@@ -66,17 +67,27 @@ class NeuralNet:
 
 	    # create current theta matrix with weights uniformly chosen from [-epsilon, epsilon]
 	    self.weightThetas[i+1] = (self.epsilon * 2) * np.random.random_sample((d1, d2)) - self.epsilon
-	
-	
-	
 
+	    # keep track of the total length of the unrolled theta
+	    totalLengthOfUnrolledTheta += (d1 * d2)
+	
 	# unroll the weight matrices theta(1),...,theta(L-1) into a single long vector, theta,
 	# that contains all parameters for the neural net
-# 	theta = np.empty(len(self.layers) + 1)
-# 	for i in (1, len(self.layers) + 1):
-#             theta[i] = weightThetas[i]
-# 
-	# print theta
+ 	unrolled_theta = []
+	for key in self.weightThetas:
+	    cur_theta_matrix = self.weightThetas[key]
+	    n,d = cur_theta_matrix.shape
+	    for i in range(n):
+	        for j in range(d):
+		    unrolled_theta.append(cur_theta_matrix[i][j])
+
+	# make sure unrolling worked...
+	if (len(unrolled_theta) != totalLengthOfUnrolledTheta):
+	    print "ERROR: UNROLLING MESSED UP!"
+
+	self.unrolledTheta = np.array(unrolled_theta)
+	print np.array(unrolled_theta)
+
 
     def forwardPropogation(x, y, theta):
 	'''
