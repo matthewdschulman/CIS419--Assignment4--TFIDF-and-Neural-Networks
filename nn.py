@@ -35,7 +35,7 @@ class NeuralNet:
         '''
 	n,d = X.shape
 
-	numFeatures = n
+	numFeatures = X[0].size
 	numClasses = np.unique(y).size
 	totalLengthOfUnrolledTheta = 0
 
@@ -90,9 +90,9 @@ class NeuralNet:
 	    print "ERROR: UNROLLING MESSED UP!"
 
 	self.unrolledTheta = np.array(unrolled_theta)
+	forwardPropogated = self.forwardPropogation(X[0], self.unrolledTheta, self.thetaDimensions)
 
-
-    def forwardPropogation(x, theta):
+    def forwardPropogation(self, x, unrolledTheta, thetaDimensions):
 	'''
 	Takes in a vector of parameters (e.g. theta) for the neural network
 	and an instance (or instances)
@@ -103,18 +103,29 @@ class NeuralNet:
 	Returns:
 		h_theta(x_i) for any instance x_i
 	'''
-	cur_a = x
 	cum_unroll_count = 0
+	cur_a = x
+
 	for i in range(len(self.layers) + 1):
-	    cur_theta_dimensions = self.thetaDimensions[i]
+	    # add bias unit to cur_a
+	    cur_a = np.insert(cur_a, 0, 1.0)		
+
+	    cur_theta_dimensions = thetaDimensions[i]
 	    delta_unroll = cur_theta_dimensions[0] * cur_theta_dimensions[1]
             cum_unroll_count += delta_unroll
-            cur_theta = reshape(self.unrolledTheta[(cum_unroll_count - delta_unroll):cum_unroll_count], (cur_theta_dimensions[0], cur_theta_dimensions[1])) 
-	    cur_a = self.sigmoid(np.dot(cur_theta, cur_a))
-	
-	# return h_theta(x)
+            cur_theta = np.reshape(unrolledTheta[(cum_unroll_count - delta_unroll):cum_unroll_count], (cur_theta_dimensions[0], cur_theta_dimensions[1])) 
+
+            new_a = np.zeros(cur_theta_dimensions[0])
+	    for j in range(len(new_a)):
+	        # calculate a_(j+1)^(i+1)
+		cum_sum = 0
+	 	for k in range(cur_theta_dimensions[1]):
+		    cum_sum += cur_theta[j][k]*cur_a[k]		    
+		new_a[j] = self.sigmoid(cum_sum)
+
+	    cur_a = new_a
+   	
 	return cur_a
-	    
 
 
     def sigmoid(self, z):
